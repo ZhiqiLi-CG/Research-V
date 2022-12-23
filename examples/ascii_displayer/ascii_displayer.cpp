@@ -2,15 +2,20 @@
 #include <vector>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include <yzLib/yz_lib.h>
+#include<zqVisualization/visualization_opengl_utils.h>
+#include<zqVisualization/visualization_vector_opengl_utils.h>
+#include<zqVisualization/visualization_glut_window.h>
+#include<zqVisualization/visualization_fbo.h>
+#include<zqVisualization/visualization_ascii_displayer.h>
+#include<zqBasicUtils/utils_timer.h>
 
-yz::opengl::DemoWindowManager	manager;
-yz::opengl::DemoWindow3D		win3d;
-yz::opengl::AsciiDisplayer		ascii_disp;
+zq::opengl::DemoWindowManager	manager;
+zq::opengl::DemoWindow3D		win3d;
+zq::opengl::AsciiDisplayer		ascii_disp;
 
 void draw(){
 
-	yz::opengl::drawXYZAxis();
+	zq::opengl::drawXYZAxis();
 
 	glDisable(GL_LIGHTING);
 	glColor3f(0, 1, 1);

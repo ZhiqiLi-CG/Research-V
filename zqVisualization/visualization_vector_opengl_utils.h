@@ -10,28 +10,26 @@
 				All the functions allow only yz::Vec, so you must 
 				be careful if you have other vector implementation, 
 				such as openCV
-	\author		Yizhong Zhang
-	\date		5/23/2012
+	\author		Zhiqi Li, based on yzLib of Dr. Yizhong Zhang
+	\date		12/24/2022
 */
 /***********************************************************/
-#ifndef __YZ_VECTOR_OPENGL_UTILS_H__
-#define __YZ_VECTOR_OPENGL_UTILS_H__
-
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
+#ifndef __VISUALIZATION_VECTOR_OPENGL_UTILS_H__
+#define __VISUALIZATION_VECTOR_OPENGL_UTILS_H__
 
 #include <iostream>
 #include <vector>
 #include <math.h>
-#ifdef yzLib_ENABLE_GLEW
-#	include "GL/glew.h"
-#endif
-#include "GL/glut.h"
-#include "yzLib/yz_math/yz_vector.h"
-#include "yzLib/yz_math/yz_interpolation.h"
-#include "yzLib/yz_opengl/yz_opengl_utils.h"
 
-namespace yz{	namespace opengl{
+#include "GL/glew.h"
+
+#include "GL/glut.h"
+#include<zqBasicMath/math_vector.h>
+#include<zqVisualization/visualization_opengl_utils.h>
+
+
+
+namespace zq{	namespace opengl{
 
 template<typename T1, typename T2>
 inline void drawLineSegment(Com2<T1> v0, Com2<T2> v1);
@@ -2326,7 +2324,7 @@ void drawNumberOnMeshEdges2D(const std::vector<TN>&			number,
 
 ///@}
 
-}}	//	end namespace yz::opengl
+}}	
 
 
-#endif	//	__YZ_VECTOR_OPENGL_UTILS_H__
+#endif	

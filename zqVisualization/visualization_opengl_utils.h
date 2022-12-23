@@ -3,7 +3,7 @@
 	\brief		OpenGL Utilities
 	\details	util functions to make using OpenGL easier. 
 				must include after <glut.h>.
-	\author		Yizhong Zhang
+	\author		Zhiqi Li, based on yzLib of Dr. Yizhong Zhang
 	\date		5/23/2012
 */
 /***********************************************************/
@@ -25,7 +25,8 @@
 
 #include <zqBasicMath/math_lookup_table.h>
 #include <zqBasicMath/math_numerical_utils.h>
-
+#include <zqBasicMath/math_vector.h>
+#include <zqBasicMath/math_matrix.h>
 
 namespace zq{	namespace opengl{
 //	========================================
@@ -67,12 +68,10 @@ inline int isMatrixStackFull(GLint matrix = GL_MODELVIEW){
 			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &curr_dep);
 			glGetIntegerv(GL_MAX_TEXTURE_STACK_DEPTH, &max_dep);
 			return curr_dep == max_dep;
-#ifdef yzLib_ENABLE_GLEW
 		case GL_COLOR:
 			glGetIntegerv(GL_COLOR_MATRIX_STACK_DEPTH, &curr_dep);
 			glGetIntegerv(GL_MAX_COLOR_MATRIX_STACK_DEPTH, &max_dep);
 			return curr_dep == max_dep;
-#endif
 		default:
 			return -1;
 	}
@@ -111,9 +110,7 @@ inline int isClientAttributeStackFull(){
 */
 inline void pushAllAttributesAndMatrices(){
 	assert( !isMatrixStackFull(GL_PROJECTION) && !isMatrixStackFull(GL_MODELVIEW) && !isMatrixStackFull(GL_TEXTURE) );
-#ifdef yzLib_ENABLE_GLEW
 	assert( !isMatrixStackFull(GL_COLOR) );
-#endif
 	assert( !isAttributeStackFull() && !isClientAttributeStackFull() );
 
 	//	push all attributes
@@ -155,7 +152,7 @@ inline void popAllAttributesAndMatrices(){
 /**
 	get projection matrix of current OpenGL context
 */
-inline Matrix4x4d getProjectionMatrixRowMajor(){
+inline zq::Matrix4x4d getProjectionMatrixRowMajor(){
 	Matrix4x4d m;
 	glGetDoublev(GL_PROJECTION_MATRIX, m.data[0]);
 	m.SetTranspose();
@@ -760,7 +757,6 @@ inline void drawString(std::string str, float x=0, float y=0, float z=0){
 	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_LIGHTING);
 
-#ifdef yzLib_ENABLE_GLEW	//	able to start new line with glew
 	int win_x, win_y;
 	getWindowCoordinate(win_x, win_y, x, y, z);
 	glWindowPos2i( win_x, win_y );
@@ -772,13 +768,6 @@ inline void drawString(std::string str, float x=0, float y=0, float z=0){
 		else
 			glutBitmapCharacter( GLUT_BITMAP_9_BY_15, c );
 	}
-#else	//	unable to start a new line, we just print '/' character
-	glRasterPos3f(x, y, z);
-	for( unsigned int i=0; i<str.length(); i++ ){
-		char c = str[i];
-		glutBitmapCharacter( GLUT_BITMAP_9_BY_15, (c=='\n'? '/' : c) );
-	}
-#endif
 
 	glPopAttrib();
 }

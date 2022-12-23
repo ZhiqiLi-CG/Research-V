@@ -20,9 +20,8 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include<zqVisualization/visualization_glut_window.h>
-#include<zqVisualization/visualization_fbo.h>
-#include<zqVisualization/visualization_ascii_displayer.h>
+#include<zqVisualization/visualization_opengl.h>
+#include<zqBasicUtils/utils_timer.h>
 
 using namespace std;
 

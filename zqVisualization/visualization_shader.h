@@ -2,21 +2,19 @@
 /**	\file
 	\brief		Shader
 	\details	must be included after <glew.h>
-	\author		Yizhong Zhang
-	\date		5/4/2013
+	\author		Zhiqi Li, based on yzLib of Dr. Yizhong Zhang
+	\date		12/24/2013
 */
 /***********************************************************/
-#ifndef __YZ_SHADER_H__
-#define __YZ_SHADER_H__
-
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
+#ifndef __VISUALIZATION_SHADER_H__
+#define __VISUALIZATION_SHADER_H__
 
 #include <iostream>
+#include <fstream>
 #include "GL/glew.h"
 #include "GL/glut.h"
 
-namespace yz{	namespace opengl{
+namespace zq{	namespace opengl{
 
 /**
 	Shader manager
@@ -180,7 +178,7 @@ private:
 };
 
 
-}}	//	end namespace yz::opengl
+}}	
 
 
-#endif	//	__YZ_SHADER_H__
+#endif	

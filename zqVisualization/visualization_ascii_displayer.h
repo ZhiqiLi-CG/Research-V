@@ -11,12 +11,11 @@
 #include <iostream>
 #include "GL/glew.h"
 #include "GL/glut.h"
-#include
 
-#include "yzLib/yz_math/yz_vector.h"
-#include "yzlib/yz_utils/yz_ascii_table.h"
+#include<zqBasicMath/math_vector.h>
+#include<zqBasicUtils/utils_ascii_table.h>
 
-namespace yz{	namespace opengl{
+namespace zq{	namespace opengl{
 
 
 /**
@@ -40,7 +39,7 @@ public:
 		float x_scale_coef = 1.0f;
 		for(int j=0; j<=height; j++)
 			for(int i=0; i<=width; i++)
-				vertex.push_back( yz::Vec2f(float(i)/width * x_scale_coef, 1.0f - float(j)/height) );
+				vertex.push_back( zq::Vec2f(float(i)/width * x_scale_coef, 1.0f - float(j)/height) );
 
 		//	create face
 		quad.clear();
@@ -57,7 +56,7 @@ public:
 					line_seg <<= (i - byte_id * 8);
 					if( line_seg & 0x80 ){		//	this pixel should be displayed
 						int base_id = j * (width + 1) + i;
-						quad.push_back( yz::int4(base_id, base_id+width+1, base_id+width+2, base_id+1) );
+						quad.push_back( zq::int4(base_id, base_id+width+1, base_id+width+2, base_id+1) );
 					}
 				}
 		}
@@ -105,8 +104,8 @@ public:
 	}
 
 public:
-	std::vector<yz::Vec2f>	vertex;			//	normalize each character into (0,0) - (1,1)
-	std::vector<yz::int4>	quad;			//	quad of each pixel
+	std::vector<zq::Vec2f>	vertex;			//	normalize each character into (0,0) - (1,1)
+	std::vector<zq::int4>	quad;			//	quad of each pixel
 	std::vector<int>		quad_start;		//	start quad of each character
 
 };

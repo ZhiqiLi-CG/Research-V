@@ -489,14 +489,10 @@ public:
 		glutInitWindowPosition(this->win_x, this->win_y);
 		glutInitWindowSize(this->win_width, this->win_height);
 		this->win_id = glutCreateWindow("3D Window");
-
-		#ifdef yzLib_ENABLE_GLEW
-			if( glewInit() != GLEW_OK ){
-				std::cout << "Init glew failed calling CreateGLUTWindow3D() of ID: " << ID << std::endl;
-				exit(0);
-			}
-		#endif
-
+		if( glewInit() != GLEW_OK ){
+			std::cout << "Init glew failed calling CreateGLUTWindow3D() of ID: " << ID << std::endl;
+			exit(0);
+		}
 		this->RegisterOpenGLCallbacks();
 
 		this->status |= this->GLUT_WINDOW_STATUS_BIT_CREATED;
@@ -836,12 +832,12 @@ public:
 			else{
 				if (use_arcball_flag){	//	rotate the scene by arcball
 					if (x != BaseGLUTWindow<ID>::old_x || y != BaseGLUTWindow<ID>::old_y) {
-						yz::Vec3d va = GetArcballVector(BaseGLUTWindow<ID>::old_x, BaseGLUTWindow<ID>::old_y);
-						yz::Vec3d vb = GetArcballVector(x, y);
-						double angle = acos(yz::myMin(1.0, yz::dot(va, vb)));
-						yz::Vec3d axis_in_camera_coord = yz::cross(va, vb);
+						zq::Vec3d va = GetArcballVector(BaseGLUTWindow<ID>::old_x, BaseGLUTWindow<ID>::old_y);
+						zq::Vec3d vb = GetArcballVector(x, y);
+						double angle = acos(zq::myMin(1.0, zq::dot(va, vb)));
+						zq::Vec3d axis_in_camera_coord = zq::cross(va, vb);
 
-						yz::Matrix4x4d rot_step;
+						zq::Matrix4x4d rot_step;
 						rot_step.SetRotationRad(axis_in_camera_coord, angle);
 						rot_step.SetTranspose();
 
@@ -877,8 +873,8 @@ public:
 
 	///@}
 
-	static yz::Vec3d GetArcballVector(int x, int y){
-		yz::Vec3d P = yz::Vec3d(
+	static zq::Vec3d GetArcballVector(int x, int y){
+		zq::Vec3d P = zq::Vec3d(
 			x / double(BaseGLUTWindow<ID>::win_width) * 2 - 1.0,
 			y / double(BaseGLUTWindow<ID>::win_height) * 2 - 1.0,
 			0);
@@ -1065,12 +1061,12 @@ public:
 		glutInitWindowSize(this->win_width, this->win_height);
 		this->win_id = glutCreateWindow("2D Window");
 
-		#ifdef yzLib_ENABLE_GLEW
-			if( glewInit() != GLEW_OK ){
-				std::cout << "Init glew failed calling CreateGLUTWindow3D() of ID: " << ID << std::endl;
-				exit(0);
-			}
-		#endif
+
+		if( glewInit() != GLEW_OK ){
+			std::cout << "Init glew failed calling CreateGLUTWindow3D() of ID: " << ID << std::endl;
+			exit(0);
+		}
+
 
 		this->RegisterOpenGLCallbacks();
 

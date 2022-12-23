@@ -39,6 +39,7 @@ endif()
 ###############################################
 include(zqVisualization/zqVisualization.cmake)
 include_directories(${zqVisualization_INCLUDE_DIRS})
+message(STATUS "==============================")
 # ---------- CUDA ----------
 if(yzLib_ENABLE_CUDA)
 	find_package(CUDA  REQUIRED)
@@ -51,7 +52,12 @@ if(yzLib_ENABLE_CUDA)
 		message(ERROR "CUDA not found, you need to install CUDA, or disable yzLib_ENABLE_CUDA")
 	endif()
 endif()
-
+###############################################
+# Link
+###############################################
+if(${MSVC}) 	
+	link_directories(${CMAKE_SOURCE_DIR}/deps/lib/win64)	
+endif()
 ###############################################
 # Example Projects
 ###############################################

@@ -5,8 +5,8 @@
 	\date		12/24/2022
 */
 /***********************************************************/
-#ifndef __YZ_TEXTURE_H__
-#define __YZ_TEXTURE_H__
+#ifndef __VISUALIZATION_TEXTURE_H__
+#define __VISUALIZATION_TEXTURE_H__
 
 
 #include <iostream>
@@ -383,7 +383,7 @@ protected:
 };
 
 
-}}	//	end namespace yz::opengl
+}}	
 
 
-#endif	//	__YZ_TEXTURE_H__
+#endif	
