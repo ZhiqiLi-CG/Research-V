@@ -13,30 +13,27 @@
 				First instance a DemoWindowManager instance as the idle
 				function manager. Create GLUTWindowX according to your need,
 				register idle function, then enter main loop
-	\author		Yizhong Zhang
-	\date		6/22/2012
+				based on yzLib of Dr. Yizhong Zhang
+	\author		Zhiqi Li
+	\date		12/23/2022
 */
 /***********************************************************/
-#ifndef __YZ_GLUT_WINDOW_H__
-#define __YZ_GLUT_WINDOW_H__
-
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
-
+#ifndef __VIZUALIZATION_GLUT_WINDOW_H__
+#define __VIZUALIZATION_GLUT_WINDOW_H__
 #include <assert.h>
 #include <vector>
 #include <iostream>
 #include <iomanip>
-#ifdef yzLib_ENABLE_GLEW
-#	include "GL/glew.h"
-#endif
-#include "GL/glut.h"
-#include "yzLib/yz_math/yz_vector.h"
-#include "yzLib/yz_math/yz_matrix.h"
-#include "yzLib/yz_opengl/yz_opengl_utils.h"
-#include "yzLib/yz_opengl/yz_texture.h"
 
-namespace yz{	namespace opengl{
+#include "GL/glew.h"
+#include "GL/glut.h"
+
+#include<zqBasicMath/math_vector.h>
+#include<zqBasicMath/math_matrix.h>
+#include<zqVisualization/visualization_opengl_utils.h>
+#include<zqVisualization/visualization_texture.h>
+
+namespace zq{	namespace opengl{
 
 /**
 	GLUT Window manager

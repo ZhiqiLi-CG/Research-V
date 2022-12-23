@@ -39,21 +39,6 @@ endif()
 ###############################################
 include(zqVisualization/zqVisualization.cmake)
 include_directories(${zqVisualization_INCLUDE_DIRS})
-
-zqLib_set_ENABLE(GLUT ON)
-zqLib_set_ENABLE(GLEW ON)
-
-# ---------- zqLibraryDeps ----------
-if(NOT EXISTS ${CMAKE_SOURCE_DIR}/deps/inc)
-	message(FATAL_ERROR "deps not found, update submodule to get zqLibraryDeps")
-else()
-	message(STATUS "zqLibraryDeps found as submodule")
-	include_directories(${CMAKE_SOURCE_DIR}/deps/inc)
-	if(${MSVC}) 
-		set(BIN_PATH "${CMAKE_SOURCE_DIR}/deps/bin/win64;${CMAKE_SOURCE_DIR}/deps/bin/win32")
-	endif()
-endif()
-
 # ---------- CUDA ----------
 if(yzLib_ENABLE_CUDA)
 	find_package(CUDA  REQUIRED)

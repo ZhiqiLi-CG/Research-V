@@ -12,9 +12,6 @@
 
 #pragma  warning(disable:4996)
 
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
-
 #include <stdio.h>
 #include <assert.h>
 #include <iostream>
@@ -23,15 +20,14 @@
 #include <sstream>
 #include <math.h>
 #include <stdarg.h>
-#ifdef yzLib_ENABLE_GLEW
-#	include "GL/glew.h"
-#endif
+#include "GL/glew.h"
 #include "GL/glut.h"
+
 #include "yzLib/yz_math/yz_lookup_table.h"
 #include "yzLib/yz_math/yz_numerical_utils.h"
 
 
-namespace yz{	namespace opengl{
+namespace zq{	namespace opengl{
 //	========================================
 ///@{
 /**	@name OpenGL Check and Utils
