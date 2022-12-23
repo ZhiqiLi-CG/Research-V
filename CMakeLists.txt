@@ -1,0 +1,97 @@
+cmake_minimum_required (VERSION 3.2)
+
+message("This CMakeList.txt is written for 64bit system only")
+
+project (zqVisualizationExamples LANGUAGES CXX)
+set(zqVisualization_ROOT_DIR ${CMAKE_SOURCE_DIR})
+
+
+if(${MSVC}) 
+	message(STATUS "Build with MSVC")
+elseif(${UNIX})
+	message(STATUS "Build with UNIX or LINUX")
+else()
+	message(WARNING "Build with unknown compiler")
+endif()
+
+
+###############################################
+# Settings
+###############################################
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+add_definitions(-DUNICODE -D_UNICODE)
+
+if(NOT CMAKE_BUILD_TYPE) 
+	set(CMAKE_BUILD_TYPE Release)
+endif() 
+set(CMAKE_DEBUG_POSTFIX "d")
+
+if(${MSVC}) 
+	SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR}/bin/Release)
+	SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${PROJECT_BINARY_DIR}/bin/Debug)
+	SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR}/bin/Release)
+	SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG  ${PROJECT_BINARY_DIR}/bin/Debug)
+endif()
+
+
+###############################################
+# Options and config
+###############################################
+include(zqVisualization/zqVisualization.cmake)
+include_directories(${zqVisualization_INCLUDE_DIRS})
+
+zqLib_set_ENABLE(GLUT ON)
+zqLib_set_ENABLE(GLEW ON)
+
+# ---------- zqLibraryDeps ----------
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/deps/inc)
+	message(FATAL_ERROR "deps not found, update submodule to get zqLibraryDeps")
+else()
+	message(STATUS "zqLibraryDeps found as submodule")
+	include_directories(${CMAKE_SOURCE_DIR}/deps/inc)
+	if(${MSVC}) 
+		set(BIN_PATH "${CMAKE_SOURCE_DIR}/deps/bin/win64;${CMAKE_SOURCE_DIR}/deps/bin/win32")
+	endif()
+endif()
+
+# ---------- CUDA ----------
+if(yzLib_ENABLE_CUDA)
+	find_package(CUDA  REQUIRED)
+
+	if(CUDA_FOUND)
+		message(STATUS "CUDA version: ${CUDA_VERSION}")
+		include_directories(${CUDA_INCLUDE_DIRS})  
+		link_directories(${CUDA_TOOLKIT_ROOT_DIR}/lib/x64)
+	else()
+		message(ERROR "CUDA not found, you need to install CUDA, or disable yzLib_ENABLE_CUDA")
+	endif()
+endif()
+
+###############################################
+# Example Projects
+###############################################
+macro(SUBDIRLIST result curdir)
+	file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+	set(dirlist "")
+	foreach(child ${children})
+	if(IS_DIRECTORY ${curdir}/${child})
+		list(APPEND dirlist ${child})
+	endif()
+	endforeach()
+	set(${result} ${dirlist})
+endmacro()
+
+SUBDIRLIST(example_groups ${CMAKE_SOURCE_DIR}/examples)
+
+foreach(group ${example_groups})
+	if(EXISTS ${CMAKE_SOURCE_DIR}/examples/${group}/CMakeLists.txt)
+		add_subdirectory(examples/${group})				
+	else()
+		SUBDIRLIST(examples ${CMAKE_SOURCE_DIR}/examples/${group})
+		foreach(example ${examples})
+			if(EXISTS ${CMAKE_SOURCE_DIR}/examples/${group}/${example}/CMakeLists.txt)
+				add_subdirectory(examples/${group}/${example})		
+			endif()
+		endforeach()
+	endif()
+endforeach()
