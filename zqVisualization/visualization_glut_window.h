@@ -402,7 +402,7 @@ public:
 	static GLdouble fovy;					///<	field of view of y direction
 	static GLdouble z_near, z_far;			///<	clippint plane
 	static int				use_arcball_flag;		///<	if this flag is set, we use arcball; otherwise use turntable
-	static yz::Matrix4x4d	arcball_mat_col_major;	///<	matrix used by arcball
+	static zq::Matrix4x4d	arcball_mat_col_major;	///<	matrix used by arcball
 	static float			mouse_motion_speed_xy;	///<	speed of mouse motion on xy coordinate
 	static float			mouse_motion_speed_z;	///<	speed of mouse motion on z coordinate
 
@@ -916,7 +916,7 @@ template<int ID> GLdouble	GLUTWindow3D<ID>::z_far		= 100;
 template<int ID> int		GLUTWindow3D<ID>::use_arcball_flag	= 0;
 template<int ID> float		GLUTWindow3D<ID>::mouse_motion_speed_xy = 1.0f;
 template<int ID> float		GLUTWindow3D<ID>::mouse_motion_speed_z = 1.0f;
-template<int ID> yz::Matrix4x4d	GLUTWindow3D<ID>::arcball_mat_col_major;
+template<int ID> zq::Matrix4x4d	GLUTWindow3D<ID>::arcball_mat_col_major;
 template<int ID> GLclampf	GLUTWindow3D<ID>::back_ground_red	= 0.0;
 template<int ID> GLclampf	GLUTWindow3D<ID>::back_ground_green	= 0.0;
 template<int ID> GLclampf	GLUTWindow3D<ID>::back_ground_blue	= 0.0;

@@ -1,23 +1,19 @@
 /***********************************************************/
 /**	\file
-	\brief		Texture
-	\author		Yizhong Zhang
-	\date		6/24/2012
+	\brief		Texture, based on yzLib of Dr. Yizhong Zhang
+	\author		Zhiqi Li
+	\date		12/24/2022
 */
 /***********************************************************/
 #ifndef __YZ_TEXTURE_H__
 #define __YZ_TEXTURE_H__
 
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
 
 #include <iostream>
-#ifdef yzLib_ENABLE_GLEW
-#	include "GL/glew.h"
-#endif
+#include "GL/glew.h"
 #include "GL/glut.h"
 
-namespace yz{	namespace opengl{
+namespace zq{	namespace opengl{
 
 /**
 	class to hold opengl texture and related operations

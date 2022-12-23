@@ -1,20 +1,17 @@
 /***********************************************************/
 /**	\file
 	\brief		Ascii displayer
-	\author		Yizhong Zhang
-	\date		4/24/2013
+	\author		Zhiqi Li, based on yzLib of Dr.Yizhong Zhang
+	\date		12/24/2022
 */
 /***********************************************************/
-#ifndef __YZ_ASCII_DISPLAYER_H__
-#define __YZ_ASCII_DISPLAYER_H__
+#ifndef __VISUALIZATION_ASCII_DISPLAYER_H__
+#define __VISUALIZATION_ASCII_DISPLAYER_H__
 
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
 #include <iostream>
-#ifdef yzLib_ENABLE_GLEW
-#	include "GL/glew.h"
-#endif
+#include "GL/glew.h"
 #include "GL/glut.h"
+#include
 
 #include "yzLib/yz_math/yz_vector.h"
 #include "yzlib/yz_utils/yz_ascii_table.h"

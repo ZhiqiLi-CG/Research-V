@@ -2,21 +2,19 @@
 /**	\file
 	\brief		FBO with Texture and Depth Buffer
 	\details	must be included after <glew.h>
-	\author		Yizhong Zhang
-	\date		5/25/2012
+	\author		Zhiqi Li, based on yzLib of Dr. Yizhong Zhang
+	\date		12/24/2012
 */
 /***********************************************************/
-#ifndef __YZ_FBO_H__
-#define __YZ_FBO_H__
+#ifndef __VISUALIZATION_FBO_H__
+#define __VISUALIZATION_FBO_H__
 
-#include "yzLib_config.h"
-#include "yzLib/yz_setting.h"
 
 #include <iostream>
 #include "GL/glew.h"
 #include "GL/glut.h"
 
-namespace yz{	namespace opengl{
+namespace zq{	namespace opengl{
 
 /**
 	FBO of OpenGL
@@ -210,7 +208,7 @@ protected:
 };
 
 
-}}	//	end namespace yz::opengl
+}}	
 
 
-#endif	//	__YZ_FBO_H__
+#endif	

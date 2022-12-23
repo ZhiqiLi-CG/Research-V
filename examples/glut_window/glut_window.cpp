@@ -9,9 +9,9 @@
 
 				When there are multi-windows, the context of
 				OpenGL may be very complex. You must be very 
-				careful with context.
-	\author		Yizhong Zhang
-	\date		6/27/2012
+				careful with context, based on yzLib of Dr. Yizhong Zhang
+	\author		Zhiqi Li
+	\date		12/24/2022
 */
 /***********************************************************/
 
@@ -21,28 +21,30 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include<zqVisualization/visualization_glut_window.h>
+#include<zqVisualization/visualization_fbo.h>
+#include<zqVisualization/visualization_ascii_displayer.h>
 
 using namespace std;
 
 //	Two windows and a manager, ID of each window must be unique
-yz::opengl::DemoWindowManager		manager;
-yz::opengl::GLUTWindow3D<0>			win0(0,	0, 800, 600);
-yz::opengl::GLUTWindow2D<1>			win1(820, 0, 400, 300);
+zq::opengl::DemoWindowManager		manager;
+zq::opengl::GLUTWindow3D<0>			win0(0,	0, 800, 600);
+zq::opengl::GLUTWindow2D<1>			win1(820, 0, 400, 300);
 
 //	picking variables
 int current_select = -1;
-yz::Vec3f picking_point;
-yz::Vec3f cube_center(1, 0, 0);
-yz::Vec3f teapot_center(-1, 0, 0);
+zq::Vec3f picking_point;
+zq::Vec3f cube_center(1, 0, 0);
+zq::Vec3f teapot_center(-1, 0, 0);
 
 //	other variables
 float				fps;
-yz::opengl::FBO		fbo;
+zq::opengl::FBO		fbo;
 float*				tex_ptr;
 
 //	over-ridden functions
 void calculateFps(){
-	static yz::utils::FPSCalculator fps_calc;
+	static zq::utils::FPSCalculator fps_calc;
 	fps = fps_calc.GetFPS();
 }
 
@@ -53,12 +55,12 @@ void renderToFBO1(){
 	glutSetWindow(win1.win_id);			//	context must be set correctly
 	fbo.BeginRender();
 
-	yz::opengl::pushAllAttributesAndMatrices();	//	push all attributes and matrices
+	zq::opengl::pushAllAttributesAndMatrices();	//	push all attributes and matrices
 	win0.DefaultReshapeFunc(win0.win_width, win0.win_height);	//	set projection matrix
 	win0.auto_swap_buffers = 0;					//	disable glutSwapBuffers() in win0.displayFunc()
 	win0.DefaultDisplayFunc();					//	call display function of another context
 	win0.auto_swap_buffers = 1;					//	enable glutSwapBuffers() in win0.displayFunc()
-	yz::opengl::popAllAttributesAndMatrices();	//	pop all attributes and matrices
+	zq::opengl::popAllAttributesAndMatrices();	//	pop all attributes and matrices
 
 	fbo.EndRender();
 	//	Still some variables are possibly changed, such as the matrix.
@@ -68,14 +70,14 @@ void renderToFBO1(){
 
 void win0_showFps(){
 	glColor3f(1, 0, 1);
-	yz::opengl::printInfo(0, 0, "fps: %f\nCtrl + Left click can pick object", fps);
+	zq::opengl::printInfo(0, 0, "fps: %f\nCtrl + Left click can pick object", fps);
 }
 
 void win0_draw(){
 	//	draw picking point
 	if( current_select != -1 ){
 		glColor3f(1, 0, 1);
-		yz::opengl::drawPointAsSphere(picking_point, 0.02);
+		zq::opengl::drawPointAsSphere(picking_point, 0.02);
 	}
 
 	glPushMatrix();
@@ -94,13 +96,13 @@ void win0_draw(){
 void win0_picking_draw(){
 	glPushMatrix();
 	glTranslatef(cube_center.x, cube_center.y, cube_center.z);
-	yz::opengl::setPickingIndex(0);
+	zq::opengl::setPickingIndex(0);
 	glutSolidCube(0.5);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(teapot_center.x, teapot_center.y, teapot_center.z);
-	yz::opengl::setPickingIndex(1);
+	zq::opengl::setPickingIndex(1);
 	glutSolidTeapot(0.5);
 	glPopMatrix();
 }
@@ -110,7 +112,7 @@ void win0_process_picking(int idx){
 
 	//	calculate world coordinate of the picking point
 	float depth = win0.PickingDepth(win0.old_x, win0.old_y);
-	yz::opengl::getWorldCoordinate(picking_point[0], picking_point[1], picking_point[2], win0.old_x, win0.old_y, depth);
+	zq::opengl::getWorldCoordinate(picking_point[0], picking_point[1], picking_point[2], win0.old_x, win0.old_y, depth);
 }
 
 void win0_mouse_func(int button, int state, int x, int y){
@@ -137,9 +139,9 @@ void win0_motion_func(int x, int y){
 		if( current_select >= 0 ){
 			//	move the selected objects
 			double u, v, d;
-			yz::opengl::getWindowCoordinate( u, v, d, picking_point.x, picking_point.y, picking_point.z );
-			yz::Vec3f xyz;
-			yz::opengl::getWorldCoordinate(xyz.x, xyz.y, xyz.z, x, y, d);
+			zq::opengl::getWindowCoordinate( u, v, d, picking_point.x, picking_point.y, picking_point.z );
+			zq::Vec3f xyz;
+			zq::opengl::getWorldCoordinate(xyz.x, xyz.y, xyz.z, x, y, d);
 
 			if( current_select == 0 )
 				cube_center += xyz - picking_point;
@@ -174,14 +176,14 @@ void win0_motion_func(int x, int y){
 
 void win1_showInfo(){
 	glColor3f(0, 0, 1);
-	yz::opengl::printInfo(0, 30, "texture got from FBO");
+	zq::opengl::printInfo(0, 30, "texture got from FBO");
 }
 
 void win1_draw(){
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, fbo.tex_id);
 	glColor3f(1, 1, 1);
-	yz::opengl::drawWholeTexture(0, 0, 1, 1);
+	zq::opengl::drawWholeTexture(0, 0, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

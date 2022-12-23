@@ -7,8 +7,8 @@
 	\date		5/23/2012
 */
 /***********************************************************/
-#ifndef __YZ_OPENGL_UTILS_H__
-#define __YZ_OPENGL_UTILS_H__
+#ifndef __VISUALIZATION_OPENGL_UTILS_H__
+#define __VISUALIZATION_OPENGL_UTILS_H__
 
 #pragma  warning(disable:4996)
 
@@ -23,8 +23,8 @@
 #include "GL/glew.h"
 #include "GL/glut.h"
 
-#include "yzLib/yz_math/yz_lookup_table.h"
-#include "yzLib/yz_math/yz_numerical_utils.h"
+#include <zqBasicMath/math_lookup_table.h>
+#include <zqBasicMath/math_numerical_utils.h>
 
 
 namespace zq{	namespace opengl{
@@ -889,7 +889,7 @@ inline void drawRotationRings(float radius = 1, int slices = 32){
 	glColor3f(1, 0, 0);
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2* ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(0, x, y);
@@ -900,7 +900,7 @@ inline void drawRotationRings(float radius = 1, int slices = 32){
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2* ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(x, 0, y);
@@ -911,7 +911,7 @@ inline void drawRotationRings(float radius = 1, int slices = 32){
 	glColor3f(0, 0, 1);
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2* ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(x, y, 0);
@@ -933,7 +933,7 @@ inline void drawXYZRings(float radius = 1, int slices = 32){
 	//	X ring
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2*ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(0, x, y);
@@ -943,7 +943,7 @@ inline void drawXYZRings(float radius = 1, int slices = 32){
 	//	Y ring
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2*ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(x, 0, y);
@@ -953,7 +953,7 @@ inline void drawXYZRings(float radius = 1, int slices = 32){
 	//	Z ring
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
-			float angle = i*2*YZ_PI/slices;
+			float angle = i*2*ZQ_PI/slices;
 			float x = radius * cos(angle);
 			float y = radius * sin(angle);
 			glVertex3f(x, y, 0);
