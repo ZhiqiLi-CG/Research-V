@@ -53,12 +53,6 @@ if(yzLib_ENABLE_CUDA)
 	endif()
 endif()
 ###############################################
-# Link
-###############################################
-if(${MSVC}) 	
-	link_directories(${CMAKE_SOURCE_DIR}/deps/lib/win64)	
-endif()
-###############################################
 # Example Projects
 ###############################################
 macro(SUBDIRLIST result curdir)
@@ -76,6 +70,7 @@ SUBDIRLIST(example_groups ${CMAKE_SOURCE_DIR}/examples)
 
 foreach(group ${example_groups})
 	if(EXISTS ${CMAKE_SOURCE_DIR}/examples/${group}/CMakeLists.txt)
+		set(example ${group})
 		add_subdirectory(examples/${group})				
 	else()
 		SUBDIRLIST(examples ${CMAKE_SOURCE_DIR}/examples/${group})

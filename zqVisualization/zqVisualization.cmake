@@ -7,9 +7,10 @@ set(zqVisualization_INCLUDE_DIRS
         ${zqBasicMath_INCLUDE_DIRS}
         ${zqBasicUtils_INCLUDE_DIRS}
 	${PROJECT_BINARY_DIR})
-function(zqVisualization_Deps project_name)
-	set(CMAKE_CXX_STANDARD 17)
 
+macro(zqVisualization_Deps project_name)
+	set(CMAKE_CXX_STANDARD 17)
+	link_directories(${zqVisualization_DIR}/../deps/lib/win64)	
 	if(NOT EXISTS ${zqVisualization_DIR}/../deps/inc)
 		message(FATAL_ERROR "deps not found, update submodule to get zqLibraryDeps")
 	else()
@@ -29,6 +30,6 @@ function(zqVisualization_Deps project_name)
 		target_link_libraries(${project_name} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 		target_link_libraries(${project_name} ${GLEW_LIBRARIES})
 	endif()
-endfunction()	
+endmacro()	
 
 	
