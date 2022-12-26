@@ -127,7 +127,7 @@ inline void drawPointAsBall(Com2<T> p, float radius, int slices = 16){
 		glVertex2f(p.x, p.y);
 		for(int i=0; i<=slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex2f(p.x + r.x, p.y + r.y);
 		}
 	glEnd();
@@ -386,7 +386,7 @@ template<typename T1, typename T2>
 inline void drawArrow(Com2<T1> origin, Com2<T2> end, float length_coef = 0.25f, float width_coef = 0.1f){
 	Vec2f dir = Vec2f(end) - Vec2f(origin);
 	Vec2f p = Vec2f(origin) + dir * (1.0f - length_coef);
-	dir.SetRotateRad(YZ_PI*0.5f);
+	dir.SetRotateRad(ZQ_PI*0.5f);
 	dir *= width_coef;
 
 	glBegin(GL_LINES);
@@ -577,7 +577,7 @@ inline void drawCircle(Com2<T> center, float radius, int slices = 32){
 	glBegin(GL_LINE_LOOP);
 		for( int i=0; i<slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex2f(center.x+r.x, center.y+r.y);
 		}
 	glEnd();
@@ -595,7 +595,7 @@ inline void drawCircleFilled(Com2<T> center, float radius, int slices = 32){
 	glBegin(GL_POLYGON);
 		for( int i=0; i<slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex2f(center.x+r.x, center.y+r.y);
 		}
 	glEnd();
@@ -788,7 +788,7 @@ inline void drawCylinder(Com3<T1> v0, Com3<T2> v1, float radius, int slices){
 		Vec2f nor_old = r_old.Normalize();
 		for( int i=1; i<=slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor_old.x, 0, nor_old.y);
 			glVertex3f(r_old.x, 0, r_old.y);
@@ -848,7 +848,7 @@ inline void drawCylinderWire(Com3<T1> v0, Com3<T2> v1, float radius, int slices 
 		float h = ry_length;
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -860,7 +860,7 @@ inline void drawCylinderWire(Com3<T1> v0, Com3<T2> v1, float radius, int slices 
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, 0, r.y);
@@ -870,7 +870,7 @@ inline void drawCylinderWire(Com3<T1> v0, Com3<T2> v1, float radius, int slices 
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -926,7 +926,7 @@ inline void drawCylinderClosed(Com3<T1> v0, Com3<T2> v1, float radius, int slice
 	Vec2f nor_old = r_old.Normalize();
 	for( int i=1; i<=slices; i++ ){
 		Vec2f r(radius, 0);
-		r.SetRotateRad(i*2*YZ_PI/slices);
+		r.SetRotateRad(i*2*ZQ_PI/slices);
 		Vec2f nor = r.Normalize();
 		glNormal3f(nor_old.x, 0, nor_old.y);
 		glVertex3f(r_old.x, 0, r_old.y);
@@ -945,7 +945,7 @@ inline void drawCylinderClosed(Com3<T1> v0, Com3<T2> v1, float radius, int slice
 		glVertex3f(0, 0, 0);
 		for( int i=0; i<=slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex3f(r.x, 0, r.y);
 		}
 	glEnd();
@@ -956,7 +956,7 @@ inline void drawCylinderClosed(Com3<T1> v0, Com3<T2> v1, float radius, int slice
 		glVertex3f(0, h, 0);
 		for( int i=0; i<=slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(-i*2*YZ_PI/slices);
+			r.SetRotateRad(-i*2*ZQ_PI/slices);
 			glVertex3f(r.x, h, r.y);
 		}
 	glEnd();
@@ -1008,7 +1008,7 @@ inline void drawCylinderClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, int s
 		float h = ry_length;
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -1020,7 +1020,7 @@ inline void drawCylinderClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, int s
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, 0, r.y);
@@ -1030,7 +1030,7 @@ inline void drawCylinderClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, int s
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -1042,7 +1042,7 @@ inline void drawCylinderClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, int s
 		glNormal3f(0, -1, 0);
 		for( int i=0; i<slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex3f(0, 0, 0);
 			glVertex3f(r.x, 0, r.y);
 		}
@@ -1052,7 +1052,7 @@ inline void drawCylinderClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, int s
 		glNormal3f(0, 1, 0);
 		for( int i=0; i<slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex3f(0, h, 0);
 			glVertex3f(r.x, h, r.y);
 		}
@@ -1107,7 +1107,7 @@ inline void drawCylinderHalfClosed(Com3<T1> v0, Com3<T2> v1, float radius, int s
 	Vec2f nor_old = r_old.Normalize();
 	for( int i=1; i<=slices; i++ ){
 		Vec2f r(radius, 0);
-		r.SetRotateRad(i*2*YZ_PI/slices);
+		r.SetRotateRad(i*2*ZQ_PI/slices);
 		Vec2f nor = r.Normalize();
 		glNormal3f(nor_old.x, 0, nor_old.y);
 		glVertex3f(r_old.x, 0, r_old.y);
@@ -1126,7 +1126,7 @@ inline void drawCylinderHalfClosed(Com3<T1> v0, Com3<T2> v1, float radius, int s
 		glVertex3f(0, h, 0);
 		for( int i=0; i<=slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(-i*2*YZ_PI/slices);
+			r.SetRotateRad(-i*2*ZQ_PI/slices);
 			glVertex3f(r.x, h, r.y);
 		}
 	glEnd();
@@ -1178,7 +1178,7 @@ inline void drawCylinderHalfClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, i
 		float h = ry_length;
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -1190,7 +1190,7 @@ inline void drawCylinderHalfClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, i
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, 0, r.y);
@@ -1200,7 +1200,7 @@ inline void drawCylinderHalfClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, i
 	glBegin(GL_LINE_LOOP);
 		for(int i=0; i<slices; i++){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			Vec2f nor = r.Normalize();
 			glNormal3f(nor.x, 0, nor.y);
 			glVertex3f(r.x, h, r.y);
@@ -1212,7 +1212,7 @@ inline void drawCylinderHalfClosedWire(Com3<T1> v0, Com3<T2> v1, float radius, i
 		glNormal3f(0, 1, 0);
 		for( int i=0; i<slices; i++ ){
 			Vec2f r(radius, 0);
-			r.SetRotateRad(i*2*YZ_PI/slices);
+			r.SetRotateRad(i*2*ZQ_PI/slices);
 			glVertex3f(0, h, 0);
 			glVertex3f(r.x, h, r.y);
 		}

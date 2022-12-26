@@ -33,6 +33,15 @@ if(${MSVC})
 	SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG  ${PROJECT_BINARY_DIR}/bin/Debug)
 endif()
 
+###############################################
+# Config data path
+###############################################
+set(MATH_DATA_PATH "${CMAKE_SOURCE_DIR}/zqBasicMath/data")
+configure_file(
+	"${CMAKE_SOURCE_DIR}/zqBasicMath/examples/math_data_path.h.in" 
+	"${PROJECT_BINARY_DIR}/math_data_path.h"
+	@ONLY)
+message(STATUS "${PROJECT_BINARY_DIR}/data_path.h created,\n DATA_PATH=${MATH_DATA_PATH}")
 
 ###############################################
 # Options and config
