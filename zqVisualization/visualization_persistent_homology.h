@@ -88,12 +88,14 @@ namespace zq{	namespace homology{
 				type_exist.insert(feture_type[i]);
 				type_splited.push_back(feture_type[i]);
 				epsilon_interval_splited.push_back(std::vector<std::pair<float, float>>());
-				epsilon_interval_splited[epsilon_interval_splited.size() - 1].push_back(epsilon_interval[i]);
+				if(epsilon_interval[i].second!= epsilon_interval[i].first)
+					epsilon_interval_splited[epsilon_interval_splited.size() - 1].push_back(epsilon_interval[i]);
 			}
 			else {
 				for (int j = 0; j < type_splited.size(); j++) {
 					if (type_splited[j] == feture_type[i]) {
-						epsilon_interval_splited[j].push_back(epsilon_interval[i]);
+						if (epsilon_interval[i].second != epsilon_interval[i].first)
+							epsilon_interval_splited[j].push_back(epsilon_interval[i]);
 						break;
 					}
 				}
@@ -106,12 +108,16 @@ namespace zq{	namespace homology{
 		//	}
 		//}
 		/// Then split the y
+		float max_splited = -1;
+		for (int i = 0; i < epsilon_interval_splited.size(); i++)
+			if (epsilon_interval_splited[i].size() > max_splited)
+				max_splited = epsilon_interval_splited[i].size();
 		float interval_y = win_y / type_splited.size();
 		float start_x = win_ox;
 		float start_y = win_oy;
 		float rate = win_x / display_max_epsilon;
 		for (int i = 0; i < type_splited.size(); i++) {
-			float sub_interval_y = interval_y / epsilon_interval_splited[i].size();
+			float sub_interval_y = interval_y / max_splited;
 			float color[3];
 			zq::opengl::getSequentialDisplayColor(color, type_splited[i]);
 			glColor3f(color[0], color[1], color[2]);
