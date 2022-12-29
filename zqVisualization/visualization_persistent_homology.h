@@ -108,16 +108,16 @@ namespace zq{	namespace homology{
 		//	}
 		//}
 		/// Then split the y
-		float max_splited = -1;
-		for (int i = 0; i < epsilon_interval_splited.size(); i++)
-			if (epsilon_interval_splited[i].size() > max_splited)
-				max_splited = epsilon_interval_splited[i].size();
+		//float max_splited = -1;
+		//for (int i = 0; i < epsilon_interval_splited.size(); i++)
+		//	if (epsilon_interval_splited[i].size() > max_splited)
+		//		max_splited = epsilon_interval_splited[i].size();
 		float interval_y = win_y / type_splited.size();
 		float start_x = win_ox;
 		float start_y = win_oy;
 		float rate = win_x / display_max_epsilon;
 		for (int i = 0; i < type_splited.size(); i++) {
-			float sub_interval_y = interval_y / max_splited;
+			float sub_interval_y = interval_y / myMax(epsilon_interval_splited[i].size(),10);
 			float color[3];
 			zq::opengl::getSequentialDisplayColor(color, type_splited[i]);
 			glColor3f(color[0], color[1], color[2]);

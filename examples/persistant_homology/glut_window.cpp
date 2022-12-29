@@ -34,14 +34,22 @@ std::vector<std::string> file_list{
 	std::string(data_path) + std::string("/persistent_homology_two_cycle_random.dat"),
 	std::string(data_path) + std::string("/persistent_homology_one_sphere_random.dat"),
 };
+std::vector<int> simplex_dimension{
+	3,3,3,4
+};
+
+std::vector<int> witness_size{
+	20,20,20,15
+};
 
 zq::DenseVector<zq::Vec3f> points;
 
 // homology
 float epsilon;
-int simplex_dimension=3;
-float max_epsilon=0.67;
+float max_epsilon=1;
 int reso_epsilon = 100;
+bool use_witness = true;
+std::vector<int> witness_index;
 
 std::vector<std::pair<float, float>> epsilon_interval;
 std::vector<int> feture_type;
@@ -72,6 +80,11 @@ void win0_draw(){
 	else if (complex_index >= complex_list.size()) complex_index = complex_list.size() - 1;
 	//printf("complex_index:%d %d\n", complex_index, complex_list[complex_index].SimplexNumber());
 	zq::homology::DrawSimplicalComplex(complex_list[complex_index]);
+	if (use_witness) {
+		glColor4f(0.5,0,0,1);
+		for(int i=0;i<points.Dim();i++)
+			zq::opengl::drawPointAsSphere(points.value[i], 0.01);
+	}
 }
 
 
@@ -153,27 +166,60 @@ int main(){
 	for (int i = 0; i < reso_epsilon; i++) {
 		epsilon_list.push_back(max_epsilon / reso_epsilon * i);
 	}
-	// 3. set the complex list
-	for (int i = 0; i < epsilon_list.size(); i++) {
-		std::vector<std::vector<int>> results;
-		zq::VRComplexConstruct(
-			epsilon_list[i],
-			points.value,
-			simplex_dimension,
-			results
+	if (use_witness) {
+		// 3. set the complex list
+		// 3.1 find witness
+		zq::FindWitness(
+			points.Dim(),
+			witness_size[example],
+			witness_index
 		);
-		complex_list.push_back(zq::Simplical_Complex<zq::Vec3f>(&(points.value[0]), points.Dim(), results));
+		// 3.2 construct
+		for (int i = 0; i < epsilon_list.size(); i++) {
+			std::vector<std::vector<int>> results;
+			zq::VRWitnessComplexConstruct(
+				epsilon_list[i],
+				points.value,
+				witness_index,
+				simplex_dimension[example],
+				results
+			);
+			complex_list.push_back(zq::Simplical_Complex<zq::Vec3f>(&(points.value[0]), points.Dim(), results));
+		}
+	}
+	else {
+		// 3. set the complex list
+		for (int i = 0; i < epsilon_list.size(); i++) {
+			std::vector<std::vector<int>> results;
+			zq::VRComplexConstruct(
+				epsilon_list[i],
+				points.value,
+				simplex_dimension[example],
+				results
+			);
+			complex_list.push_back(zq::Simplical_Complex<zq::Vec3f>(&(points.value[0]), points.Dim(), results));
+		}
+
 	}
 	// 4. calculate the persistent diagram
 	
-	zq::CalculatePersistentData(
+	zq::CalculatePersistentDataSparse(
 		epsilon_list,
 		max_epsilon,
 		complex_list,
 		epsilon_interval,
 		feture_type
 	);
-
+	auto tem_epsilon_interval = epsilon_interval;
+	auto tem_feture_type = feture_type;
+	feture_type.clear();
+	epsilon_interval.clear();
+	for (int i = 0; i < tem_feture_type.size(); i++) {
+		if (tem_feture_type[i] != simplex_dimension[example]) {
+			epsilon_interval.push_back(tem_epsilon_interval[i]);
+			feture_type.push_back(tem_feture_type[i]);
+		}
+	}
 	//	create window 0
 	win0.SetDrawAppend(win0_showFps);				//	set draw append callback
 	win0.SetDraw(win0_draw);						//	set draw callback
