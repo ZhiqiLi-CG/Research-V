@@ -24,12 +24,12 @@ using namespace std;
 
 //	Two windows and a manager, ID of each window must be unique
 zq::opengl::DemoWindowManager		manager;
-zq::opengl::GLUTWindow3D<0>			win0(0,	0, 800, 600);
+zq::opengl::GLUTWindow3D<0>			win0(0, 0, 800, 600);
 zq::opengl::GLUTWindow2D<1>			win1(820, 0, 400, 400);
 zq::opengl::GLUTWindow2D<2>			win2(1240, 0, 400, 400);
 // vector
 std::vector<std::string> file_list{
-	std::string(data_path)+std::string("/persistent_homology_one_cycle.dat"),
+	std::string(data_path) + std::string("/persistent_homology_one_cycle.dat"),
 	std::string(data_path) + std::string("/persistent_homology_one_cycle_random.dat"),
 	std::string(data_path) + std::string("/persistent_homology_two_cycle_random.dat"),
 	std::string(data_path) + std::string("/persistent_homology_one_sphere_random.dat"),
@@ -39,16 +39,20 @@ std::vector<int> simplex_dimension{
 };
 
 std::vector<int> witness_size{
-	20,20,20,15
+	20,20,20,20
+};
+
+std::vector<bool> use_witness{
+	false,false,false,true
 };
 
 zq::DenseVector<zq::Vec3f> points;
 
 // homology
+int example = 0;
 float epsilon;
-float max_epsilon=1;
+float max_epsilon = 0.6;
 int reso_epsilon = 100;
-bool use_witness = true;
 std::vector<int> witness_index;
 
 std::vector<std::pair<float, float>> epsilon_interval;
@@ -61,28 +65,28 @@ float cur_epsilon = 1.0;
 
 //	other variables
 float				fps;
-float*				tex_ptr;
+float* tex_ptr;
 
 //	over-ridden functions
-void calculateFps(){
+void calculateFps() {
 	static zq::utils::FPSCalculator fps_calc;
 	fps = fps_calc.GetFPS();
 }
 
-void win0_showFps(){
+void win0_showFps() {
 	glColor3f(1, 0, 1);
-	zq::opengl::printInfo(0, 0, "fps: %f\nuse key a and d to adjust the epsilon, cur epsilon:%f/max epsilon:%f", fps,cur_epsilon,max_epsilon);
+	zq::opengl::printInfo(0, 0, "fps: %f\nuse key a and d to adjust the epsilon, cur epsilon:%f/max epsilon:%f", fps, cur_epsilon, max_epsilon);
 }
 
-void win0_draw(){
+void win0_draw() {
 	int complex_index = cur_epsilon / (max_epsilon / reso_epsilon);
 	if (complex_index < 0) complex_index = 0;
 	else if (complex_index >= complex_list.size()) complex_index = complex_list.size() - 1;
 	//printf("complex_index:%d %d\n", complex_index, complex_list[complex_index].SimplexNumber());
 	zq::homology::DrawSimplicalComplex(complex_list[complex_index]);
-	if (use_witness) {
-		glColor4f(0.5,0,0,1);
-		for(int i=0;i<points.Dim();i++)
+	if (use_witness[example]) {
+		glColor4f(0.5, 0, 0, 1);
+		for (int i = 0; i < points.Dim(); i++)
 			zq::opengl::drawPointAsSphere(points.value[i], 0.01);
 	}
 }
@@ -102,7 +106,7 @@ void win3d_keyboard(unsigned char key, int x, int y) {
 		break;
 	}
 }
-void win1_showInfo(){
+void win1_showInfo() {
 	glColor3f(0, 0, 1);
 	zq::opengl::printInfo(0, 30, "persistent barcode");
 }
@@ -112,7 +116,7 @@ void win2_showInfo() {
 	zq::opengl::printInfo(0, 30, "persistent diagram");
 }
 
-void win1_draw(){
+void win1_draw() {
 	//glEnable(GL_TEXTURE_2D);
 	float display_max_epsilon = max_epsilon * 1.1;
 	float win_x = 2;
@@ -132,7 +136,7 @@ void win1_draw(){
 	// Then draw the line
 	glColor3f(1, 0, 0);
 	zq::opengl::drawLineSegment(
-		zq::Vec2f(cur_epsilon / display_max_epsilon * win_x+win_ox, win_oy),
+		zq::Vec2f(cur_epsilon / display_max_epsilon * win_x + win_ox, win_oy),
 		zq::Vec2f(cur_epsilon / display_max_epsilon * win_x + win_ox, win_oy + win_y)
 	);
 }
@@ -148,17 +152,17 @@ void win2_draw() {
 		feture_type,
 		max_epsilon,
 		display_max_epsilon,
-		max_epsilon*0.1,
+		max_epsilon * 0.1,
 		win_x,
 		win_y,
 		win_ox,
 		win_oy
 	);
 }
-int main(){
+int main() {
 	// 1. read points
 	cur_epsilon = 0;
-	int example = 0;
+
 	printf("the example:");
 	scanf("%d", &example);
 	zq::readDenseVectorPointsFromFile(file_list[example].c_str(), points);
@@ -166,7 +170,7 @@ int main(){
 	for (int i = 0; i < reso_epsilon; i++) {
 		epsilon_list.push_back(max_epsilon / reso_epsilon * i);
 	}
-	if (use_witness) {
+	if (use_witness[example]) {
 		// 3. set the complex list
 		// 3.1 find witness
 		zq::FindWitness(
@@ -202,7 +206,7 @@ int main(){
 
 	}
 	// 4. calculate the persistent diagram
-	
+
 	zq::CalculatePersistentDataSparse(
 		epsilon_list,
 		max_epsilon,
@@ -214,12 +218,15 @@ int main(){
 	auto tem_feture_type = feture_type;
 	feture_type.clear();
 	epsilon_interval.clear();
+	int maxv = -1;
 	for (int i = 0; i < tem_feture_type.size(); i++) {
+		maxv = maxv > tem_feture_type[i] ? maxv : tem_feture_type[i];
 		if (tem_feture_type[i] != simplex_dimension[example]) {
 			epsilon_interval.push_back(tem_epsilon_interval[i]);
 			feture_type.push_back(tem_feture_type[i]);
 		}
 	}
+	std::cout << maxv << std::endl;
 	//	create window 0
 	win0.SetDrawAppend(win0_showFps);				//	set draw append callback
 	win0.SetDraw(win0_draw);						//	set draw callback
@@ -239,12 +246,12 @@ int main(){
 	win2.SetBackgroundColor(0, 1, 1, 1);				//	set background color
 	win2.CreateGLUTWindow();							//	create window 1
 
-//!	[Window Manager Setup]
+	//!	[Window Manager Setup]
 	manager.AddIdleFunc(calculateFps);	//	add each idle function in sequence
 	manager.AddIdleFunc(win0.idleFunc);
 	manager.AddIdleFunc(win1.idleFunc);
 	manager.AddIdleFunc(win2.idleFunc);
 
 	manager.EnterMainLoop();			//	then enter main loop
-//!	[Window Manager Setup]
+	//!	[Window Manager Setup]
 }
