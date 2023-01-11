@@ -1,6 +1,6 @@
-[submodule "zqBasicMath"]
-	path = zqBasicMath
-	url = https://github.com/ZhiqiLi-CG/zqBasicMath
 [submodule "deps"]
 	path = deps
 	url = https://github.com/ZhiqiLi-CG/zqLibraryDeps
+[submodule "Research-M"]
+	path = Research-M
+	url = https://github.com/ZhiqiLi-CG/Research-M
