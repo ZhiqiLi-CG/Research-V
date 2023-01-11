@@ -8,6 +8,11 @@ else:
     sysid='unix'
 
 if __name__=='__main__':
+
+    # first, update submodule
+    cmd= "git.exe submodule update --progress --init --recursive --force -- \"Research-M\""
+    print(cmd)
+    os.system(cmd)
     # build the visulization
     origin_root=os.path.join('.')
     build_root=os.path.join(origin_root,'build')
