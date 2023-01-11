@@ -10,9 +10,13 @@ else:
 if __name__=='__main__':
 
     # first, update submodule
-    cmd= "git.exe submodule update --progress --init --recursive --force -- \"Research-M\""
+    cmd= "git.exe submodule update --progress --init --force -- \"Research-V\""
     print(cmd)
     os.system(cmd)
+    print("Finish Update Submodule")
+    print("===============================================================")
+    print("===============================================================")
+    
     # build the visulization
     origin_root=os.path.join('.')
     build_root=os.path.join(origin_root,'build')
@@ -24,7 +28,7 @@ if __name__=='__main__':
     os.system(cmd)
     build_root=os.path.join(origin_root,'build')
     
-    origin_root=os.path.join('.','zqBasicMath')
+    origin_root=os.path.join('.','Research-M')
     build_root=os.path.join(origin_root,'build')
     if sysid=="win":
         cmd="cmake -S {} -B {} -G \"Visual Studio 17 2022\"".format(origin_root, build_root)

@@ -5,7 +5,7 @@ file(RELATIVE_PATH folder_name ${CMAKE_CURRENT_LIST_DIR}/../.. ${CMAKE_CURRENT_L
 ###############################################
 # Include deps
 ###############################################
-include(${CMAKE_CURRENT_LIST_DIR}/../../zqVisualization/zqVisualization.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../../ResearchV/ResearchV.cmake)
 zqVisualization_Deps(${project_name})
 ###############################################
 # Add the project 
@@ -22,7 +22,7 @@ add_executable(${project_name} ${SOURCES})
 ###############################################
 if(${MSVC}) 
 	configure_file(
-		"${zqVisualization_ROOT_DIR}/examples/vs_tmp.vcxproj.user.in" 
+		"${ResearchV_ROOT_DIR}/examples/vs_tmp.vcxproj.user.in" 
 		"${PROJECT_BINARY_DIR}/${example}.vcxproj.user"
 		@ONLY)
 	message(STATUS "created: ${PROJECT_BINARY_DIR}/${example}.vcxproj.user")

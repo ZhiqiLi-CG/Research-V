@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.2)
 
 message("This CMakeList.txt is written for 64bit system only")
 
-project (zqVisualizationExamples LANGUAGES CXX)
-set(zqVisualization_ROOT_DIR ${CMAKE_SOURCE_DIR})
+project (ResearchVExamples LANGUAGES CXX)
+set(ResearchV_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
 
 if(${MSVC}) 
@@ -36,9 +36,9 @@ endif()
 ###############################################
 # Config data path
 ###############################################
-set(MATH_DATA_PATH "${CMAKE_SOURCE_DIR}/zqBasicMath/data")
+set(MATH_DATA_PATH "${CMAKE_SOURCE_DIR}/Research-M/data")
 configure_file(
-	"${CMAKE_SOURCE_DIR}/zqBasicMath/examples/math_data_path.h.in" 
+	"${CMAKE_SOURCE_DIR}/Research-M/examples/math_data_path.h.in" 
 	"${PROJECT_BINARY_DIR}/math_data_path.h"
 	@ONLY)
 message(STATUS "${PROJECT_BINARY_DIR}/data_path.h created,\n DATA_PATH=${MATH_DATA_PATH}")
@@ -46,8 +46,8 @@ message(STATUS "${PROJECT_BINARY_DIR}/data_path.h created,\n DATA_PATH=${MATH_DA
 ###############################################
 # Options and config
 ###############################################
-include(zqVisualization/zqVisualization.cmake)
-include_directories(${zqVisualization_INCLUDE_DIRS})
+include(ResearchV/ResearchV.cmake)
+include_directories(${ResearchV_INCLUDE_DIRS})
 message(STATUS "==============================")
 # ---------- CUDA ----------
 if(yzLib_ENABLE_CUDA)
