@@ -30,7 +30,8 @@ std::vector<std::string> output_root_dir{
 	"simple_bubble_capillary",
 	"simple_bubble_marangoni",
 	"simple_bubble_vorticity",
-	"simple_bubble_pressure"
+	"simple_bubble_pressure",
+	"simple_bubble_cuda"
 };
 std::string name;
 int example=0;
