@@ -15,7 +15,7 @@
 #include<zqVisualization/visualization_opengl.h>
 #include<zqVisualization/visualization_persistent_homology.h>
 #include<zqBasicUtils/utils_timer.h>
-#include<zqBasicMath/math_numerical_utils.h>
+#include<zqBasicMath/math_utils.h>
 #include<zqBasicMath/math_io.h>
 #include<zqBasicMath/math_homology.h>
 #include<math_data_path.h>
@@ -165,7 +165,7 @@ int main() {
 
 	printf("the example:");
 	scanf("%d", &example);
-	zq::readDenseVectorPointsFromFile(file_list[example].c_str(), points);
+	zq::utils::readDenseVectorPointsFromFile(file_list[example].c_str(), points);
 	// 2. set the epsilon list
 	for (int i = 0; i < reso_epsilon; i++) {
 		epsilon_list.push_back(max_epsilon / reso_epsilon * i);

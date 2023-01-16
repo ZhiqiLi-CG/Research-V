@@ -17,7 +17,7 @@
 #include<zqVisualization/visualization_opengl_utils.h>
 #include<zqBasicMath/math_homology.h>
 #include<zqBasicMath/math_vector.h>
-#include<zqBasicMath/math_lookup_table.h>
+#include<zqBasicUtils/utils_lookup_table.h>
 
 namespace zq{	namespace homology{
 	

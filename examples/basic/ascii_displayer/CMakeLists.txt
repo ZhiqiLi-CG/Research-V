@@ -5,17 +5,26 @@ file(RELATIVE_PATH folder_name ${CMAKE_CURRENT_LIST_DIR}/../.. ${CMAKE_CURRENT_L
 ###############################################
 # Include deps
 ###############################################
-include(${CMAKE_CURRENT_LIST_DIR}/../../ResearchV/ResearchV.cmake)
-zqVisualization_Deps(${project_name})
+include(${CMAKE_CURRENT_LIST_DIR}/../../../ResearchV/ResearchV.cmake)
+ResearchV_Deps(${project_name})
 ###############################################
 # Add the project 
 ###############################################
-project(${project_name})
+project(${project_name} LANGUAGES CXX CUDA)
+include_directories(${CMAKE_CURRENT_LIST_DIR})
+if(CUDA_ENABLE)
+	file(GLOB  SOURCES
+		"./*.h"
+		"./*.cpp"
+		"./*.cu"
+	)
+else()
+	file(GLOB  SOURCES
+		"./*.h"
+		"./*.cpp"
+	)
+endif()
 
-file(GLOB  SOURCES
-	"./*.h"
-	"./*.cpp"
-)
 add_executable(${project_name} ${SOURCES})
 ###############################################
 # Add .user file for Visual Studio to add bin to path

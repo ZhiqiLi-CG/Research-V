@@ -23,8 +23,8 @@
 #include "GL/glew.h"
 #include "GL/glut.h"
 
-#include <zqBasicMath/math_lookup_table.h>
-#include <zqBasicMath/math_numerical_utils.h>
+#include <zqBasicUtils/utils_lookup_table.h>
+#include <zqBasicMath/math_utils.h>
 #include <zqBasicMath/math_vector.h>
 #include <zqBasicMath/math_matrix.h>
 

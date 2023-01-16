@@ -1,0 +1,6 @@
+﻿#ifndef VISUALIZATION_DATA_PATH_H
+#define VISUALIZATION_DATA_PATH_H
+
+const char* visualization_data_path = "@VISUALIZATION_DATA_PATH@";
+
+#endif
