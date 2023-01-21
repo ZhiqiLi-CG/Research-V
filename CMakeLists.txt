@@ -51,6 +51,12 @@ configure_file(
 	@ONLY)
 message(STATUS "${PROJECT_BINARY_DIR}/visualization_data_path.h created,\n DATA_PATH=${VISUALIZATION_DATA_PATH}")
 
+set(MATH_DATA_PATH "${CMAKE_SOURCE_DIR}/Research-M/data")
+configure_file(
+	"${CMAKE_SOURCE_DIR}/Research-M/examples/math_data_path.h.in" 
+	"${PROJECT_BINARY_DIR}/math_data_path.h"
+	@ONLY)
+
 ###############################################
 # Options and config
 ###############################################
@@ -61,6 +67,7 @@ include_directories(${ResearchV_INCLUDE_DIRS})
 ###############################################
 # Example Projects
 ###############################################
+
 macro(SUBDIRLIST result curdir)
 	file(GLOB children RELATIVE ${curdir} ${curdir}/*)
 	set(dirlist "")
