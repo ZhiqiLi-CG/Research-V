@@ -1,7 +1,10 @@
 set(ResearchV_DIR ${CMAKE_CURRENT_LIST_DIR})
 include(${ResearchV_DIR}/../zqVisualization/zqVisualization.cmake)
 get_filename_component(ResearchV_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/../ ABSOLUTE)
-
+set(ResearchV_INCLUDE_DIRS
+	${ResearchV_INCLUDE_DIR}
+	${zqVisualization_INCLUDE_DIRS}
+	${PROJECT_BINARY_DIR})
 
 macro(Set_ResearchV_Options)
 	#----------- Set Option-------
@@ -10,10 +13,7 @@ macro(Set_ResearchV_Options)
 endmacro()
 
 macro(Set_ResearchV_Env)
-	set(ResearchV_INCLUDE_DIRS
-		${ResearchV_INCLUDE_DIR}
-		${zqVisualization_INCLUDE_DIRS}
-		${PROJECT_BINARY_DIR})
+
 	# ---------- CUDA ----------
 	if(CUDA_ENABLE)
 		find_package(CUDA  REQUIRED)
