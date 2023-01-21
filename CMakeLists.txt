@@ -2,7 +2,15 @@ cmake_minimum_required (VERSION 3.2)
 
 message("This CMakeList.txt is written for 64bit system only")
 
-project (ResearchVExamples LANGUAGES CXX)
+include(ResearchV/ResearchV.cmake)
+Set_ResearchV_Options()
+
+if(CUDA_ENABLE)	
+	project (ResearchVExamples LANGUAGES CXX CUDA)
+else()
+	project (ResearchVExamples LANGUAGES CXX)	
+endif()
+
 set(ResearchV_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
 
@@ -46,9 +54,9 @@ message(STATUS "${PROJECT_BINARY_DIR}/visualization_data_path.h created,\n DATA_
 ###############################################
 # Options and config
 ###############################################
-include(ResearchV/ResearchV.cmake)
-include_directories(${ResearchV_INCLUDE_DIRS})
+
 Set_ResearchV_Env()
+include_directories(${ResearchV_INCLUDE_DIRS})
 
 ###############################################
 # Example Projects
