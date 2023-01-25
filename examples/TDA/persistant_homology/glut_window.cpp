@@ -34,17 +34,12 @@ std::vector<std::string> file_list{
 	std::string(data_path) + std::string("/persistent_homology_two_cycle_random.dat"),
 	std::string(data_path) + std::string("/persistent_homology_one_sphere_random.dat"),
 };
-std::vector<int> simplex_dimension{
-	3,3,3,4
-};
 
-std::vector<int> witness_size{
-	20,20,20,20
-};
+zq::Array<int> simplex_dimension(4);
 
-std::vector<bool> use_witness{
-	false,false,false,true
-};
+zq::Array<int> witness_size(4);
+
+zq::Array<bool> use_witness(4);
 
 zq::DenseVector<zq::Vec3f> points;
 
@@ -53,12 +48,12 @@ int example = 0;
 float epsilon;
 float max_epsilon = 0.6;
 int reso_epsilon = 100;
-std::vector<int> witness_index;
+zq::Array<int> witness_index;
 
-std::vector<std::pair<float, float>> epsilon_interval;
-std::vector<int> feture_type;
-std::vector<float> epsilon_list;
-std::vector<zq::Simplical_Complex<zq::Vec3f>> complex_list;
+zq::Array<std::pair<float, float>> epsilon_interval;
+zq::Array<int> feture_type;
+zq::Array<float> epsilon_list;
+zq::Array<zq::Simplical_Complex<zq::Vec3f>> complex_list;
 
 // hci panal
 float cur_epsilon = 1.0;
@@ -160,6 +155,22 @@ void win2_draw() {
 	);
 }
 int main() {
+
+	simplex_dimension[0] = 3;
+	simplex_dimension[1] = 3;
+	simplex_dimension[2] = 3;
+	simplex_dimension[3] = 4;
+	//{3,3,3,4	};
+
+	witness_size[0] = 20;
+	witness_size[1] = 20;
+	witness_size[2] = 20;
+	witness_size[3] = 20;
+
+	use_witness[0] = false;
+	use_witness[1] = false;
+	use_witness[2] = false;
+	use_witness[3] = true;
 	// 1. read points
 	cur_epsilon = 0;
 
@@ -180,8 +191,8 @@ int main() {
 		);
 		// 3.2 construct
 		for (int i = 0; i < epsilon_list.size(); i++) {
-			std::vector<std::vector<int>> results;
-			zq::VRWitnessComplexConstruct(
+			zq::Array<zq::Array<int>> results;
+			zq::VRWitnessComplexConstruct<float,zq::Vec3f>(
 				epsilon_list[i],
 				points.value,
 				witness_index,
@@ -194,8 +205,8 @@ int main() {
 	else {
 		// 3. set the complex list
 		for (int i = 0; i < epsilon_list.size(); i++) {
-			std::vector<std::vector<int>> results;
-			zq::VRComplexConstruct(
+			zq::Array<zq::Array<int>> results;
+			zq::VRComplexConstruct<float,zq::Vec3f>(
 				epsilon_list[i],
 				points.value,
 				simplex_dimension[example],
@@ -207,7 +218,7 @@ int main() {
 	}
 	// 4. calculate the persistent diagram
 
-	zq::CalculatePersistentDataSparse(
+	zq::CalculatePersistentDataSparse<zq::Vec3f>(
 		epsilon_list,
 		max_epsilon,
 		complex_list,

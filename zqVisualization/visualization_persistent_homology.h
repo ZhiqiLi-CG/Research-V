@@ -39,7 +39,7 @@ namespace zq{	namespace homology{
 		for (int i = 0; i < complex.SimplexNumber(); i++) {
 			const Simplex<int>& simplex = complex.simplex[i];
 
-			const std::vector<zq::Vec<T, d>>& points = complex.points;
+			const zq::Array<zq::Vec<T, d>>& points = complex.points;
 
 			if (simplex.Dim() == 1) {
 				glColor4f(simplex_color[0][0], simplex_color[0][1], simplex_color[0][2], simplex_color[0][3]);
@@ -81,8 +81,8 @@ namespace zq{	namespace homology{
 	}
 	
 	void DrawPersistentBarCode(
-		const std::vector<std::pair<float, float>>& epsilon_interval,
-		const std::vector<int>& feture_type,
+		const zq::Array<std::pair<float, float>>& epsilon_interval,
+		const zq::Array<int>& feture_type,
 		float max_epsilon,
 		float display_max_epsilon,
 		float win_x,
@@ -94,15 +94,15 @@ namespace zq{	namespace homology{
 		//	printf("%d,start_epsilon, end_epsilon:%f %f\n", feture_type[i], epsilon_interval[i].first, epsilon_interval[i].second);
 		//}
 		/// First, split feture type
-		std::vector<std::vector<std::pair<float, float>>> epsilon_interval_splited;
-		std::vector<int> type_splited;
+		zq::Array<zq::Array<std::pair<float, float>>> epsilon_interval_splited;
+		zq::Array<int> type_splited;
 		std::set<int> type_exist;
 		for (int i = 0; i < epsilon_interval.size(); i++) {
 			auto iter = type_exist.find(feture_type[i]);
 			if (iter == type_exist.end()) {
 				type_exist.insert(feture_type[i]);
 				type_splited.push_back(feture_type[i]);
-				epsilon_interval_splited.push_back(std::vector<std::pair<float, float>>());
+				epsilon_interval_splited.push_back(zq::Array<std::pair<float, float>>());
 				if(epsilon_interval[i].second!= epsilon_interval[i].first)
 					epsilon_interval_splited[epsilon_interval_splited.size() - 1].push_back(epsilon_interval[i]);
 			}
@@ -140,12 +140,11 @@ namespace zq{	namespace homology{
 				float start_line_x=start_x+ epsilon_interval_splited[i][j].first* rate;
 				float end_line_x = start_x + epsilon_interval_splited[i][j].second * rate;
 				float start_line_y = start_y + j * sub_interval_y , end_line_y=start_y+j* sub_interval_y;
-				std::vector<Vec3f> bar{
-					zq::Vec2f(start_line_x,start_line_y),
-					zq::Vec2f(end_line_x,end_line_y),
-					zq::Vec2f(end_line_x,end_line_y + sub_interval_y*0.9),
-					zq::Vec2f(start_line_x, start_line_y + sub_interval_y * 0.9)
-				};
+				zq::Array<Vec3f> bar(4);
+				bar[0] = zq::Vec2f(start_line_x, start_line_y);
+				bar[1] = zq::Vec2f(end_line_x, end_line_y);
+				bar[2] = zq::Vec2f(end_line_x, end_line_y + sub_interval_y * 0.9);
+				bar[3] = zq::Vec2f(start_line_x, start_line_y + sub_interval_y * 0.9);
 				glBegin(GL_TRIANGLES);
 				for (int i = 0; i < 3; i++) {
 					glVertex3f(bar[i][0], bar[i][1], bar[i][2]);
@@ -160,8 +159,8 @@ namespace zq{	namespace homology{
 	}
 
 	void DrawPersistentDiagram(
-		const std::vector<std::pair<float, float>>& epsilon_interval,
-		const std::vector<int>& feture_type,
+		const zq::Array<std::pair<float, float>>& epsilon_interval,
+		const zq::Array<int>& feture_type,
 		float max_epsilon,
 		float display_max_epsilon,
 		float radius,
@@ -174,15 +173,15 @@ namespace zq{	namespace homology{
 		//	printf("%d,start_epsilon, end_epsilon:%f %f\n", feture_type[i], epsilon_interval[i].first, epsilon_interval[i].second);
 		//}
 		/// First, split feture type
-		std::vector<std::vector<std::pair<float, float>>> epsilon_interval_splited;
-		std::vector<int> type_splited;
+		zq::Array<zq::Array<std::pair<float, float>>> epsilon_interval_splited;
+		zq::Array<int> type_splited;
 		std::set<int> type_exist;
 		for (int i = 0; i < epsilon_interval.size(); i++) {
 			auto iter = type_exist.find(feture_type[i]);
 			if (iter == type_exist.end()) {
 				type_exist.insert(feture_type[i]);
 				type_splited.push_back(feture_type[i]);
-				epsilon_interval_splited.push_back(std::vector<std::pair<float, float>>());
+				epsilon_interval_splited.push_back(zq::Array<std::pair<float, float>>());
 				epsilon_interval_splited[epsilon_interval_splited.size() - 1].push_back(epsilon_interval[i]);
 			}
 			else {
