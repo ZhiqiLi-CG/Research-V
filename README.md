@@ -1,2 +1,2 @@
-# zqVisualization
+# ResearchV
 visualization tool for computer graphics
