@@ -22,9 +22,9 @@
 namespace zq{	namespace homology{
 	
 	/// Incomplete: Only vec3f and vec3d is finished
-	template<typename T>
+	template<typename T, int d>
 	void DrawSimplicalComplex(
-		const Simplical_Complex<T>& complex,
+		const Simplical_Complex<zq::Vec<T,d>>& complex,
 		const std::vector<std::vector<float>>& simplex_color =
 		std::vector<std::vector<float>>{
 			{1,0,0,1},
@@ -32,23 +32,38 @@ namespace zq{	namespace homology{
 			{0,0,1,1},
 			{1,0,1,0.5},
 		},
-		float radius = 0.01f
+		float radius = 0.01f,
+		std::function<zq::Vec<T, d>(const zq::Vec<T, d>&)>* convert2D=nullptr
 	) {
-		if (T::dims != 3) throw "Incomplete, only dim3 is completed";
+		//if (T::dims != 3) throw "Incomplete, only dim3 is completed";
 		for (int i = 0; i < complex.SimplexNumber(); i++) {
 			const Simplex<int>& simplex = complex.simplex[i];
-			const std::vector<zq::Vec3f>& points = complex.points;
+
+			const std::vector<zq::Vec<T, d>>& points = complex.points;
+
 			if (simplex.Dim() == 1) {
 				glColor4f(simplex_color[0][0], simplex_color[0][1], simplex_color[0][2], simplex_color[0][3]);
-				zq::opengl::drawPointAsSphere(points[simplex.index(0)], radius);
+				if constexpr (d == 3) zq::opengl::drawPointAsSphere(points[simplex.index(0)], radius);
+				else if constexpr (d == 2) {
+					if(convert2D==nullptr)
+						zq::opengl::drawCircleFilled(points[simplex.index(0)], radius);
+					else
+						zq::opengl::drawCircleFilled((*convert2D)(points[simplex.index(0)]), radius);
+				}
 			}
 			else if(simplex.Dim() == 2) {
 				glColor4f(simplex_color[1][0], simplex_color[1][1], simplex_color[1][2], simplex_color[1][3]);
-				zq::opengl::drawLineSegment(points[simplex.index(0)], points[simplex.index(1)]);
+				if (convert2D == nullptr)
+					zq::opengl::drawLineSegment(points[simplex.index(0)], points[simplex.index(1)]);
+				else
+					zq::opengl::drawLineSegment((*convert2D)(points[simplex.index(0)]), (*convert2D)(points[simplex.index(1)]));
 			}
 			else if (simplex.Dim() == 3) {
 				glColor4f(simplex_color[2][0], simplex_color[2][1], simplex_color[2][2], simplex_color[2][3]);
-				zq::opengl::drawTriangle(points[simplex.index(0)], points[simplex.index(1)], points[simplex.index(2)]);
+				if (convert2D == nullptr)
+					zq::opengl::drawTriangle(points[simplex.index(0)], points[simplex.index(1)], points[simplex.index(2)]);
+				else
+					zq::opengl::drawTriangle((*convert2D)(points[simplex.index(0)]), (*convert2D)(points[simplex.index(1)]), (*convert2D)(points[simplex.index(2)]));
 			}
 			else if (simplex.Dim() == 4) {
 				glColor4f(simplex_color[2][0], simplex_color[2][1], simplex_color[2][2], simplex_color[2][3]);
@@ -56,7 +71,7 @@ namespace zq{	namespace homology{
 					std::vector<int> tem;
 					for (int j = 0; j < 4; j++) {
 						if (j != i) {
-							tem.push_back(simplex.index(i));
+							tem.push_back(simplex.index(j));
 						}
 					}
 					zq::opengl::drawTriangle(points[tem[0]], points[tem[1]], points[tem[2]]);

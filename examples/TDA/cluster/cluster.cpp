@@ -17,52 +17,26 @@
 #include<zqBasicUtils/utils_timer.h>
 #include<zqBasicMath/math_utils.h>
 #include<zqBasicMath/math_io.h>
-#include<zqBasicMath/math_homology.h>
+#include<zqBasicMath/math_cluster.h>
+#include<zqBasicUtils/utils_lookup_table.h>
 #include<math_data_path.h>
 
 using namespace std;
 
 //	Two windows and a manager, ID of each window must be unique
 zq::opengl::DemoWindowManager		manager;
-zq::opengl::GLUTWindow3D<0>			win0(0, 0, 800, 600);
-zq::opengl::GLUTWindow2D<1>			win1(820, 0, 400, 400);
-zq::opengl::GLUTWindow2D<2>			win2(1240, 0, 400, 400);
-// vector
-std::vector<std::string> file_list{
-	std::string(data_path) + std::string("/persistent_homology_one_cycle.dat"),
-	std::string(data_path) + std::string("/persistent_homology_one_cycle_random.dat"),
-	std::string(data_path) + std::string("/persistent_homology_two_cycle_random.dat"),
-	std::string(data_path) + std::string("/persistent_homology_one_sphere_random.dat"),
-};
-std::vector<int> simplex_dimension{
-	3,3,3,4
-};
-
-std::vector<int> witness_size{
-	20,20,20,20
-};
-
-std::vector<bool> use_witness{
-	false,false,false,true
-};
-
-zq::DenseVector<zq::Vec3f> points;
+zq::opengl::GLUTWindow3D<0>			win0(0, 0, 800, 600);  // vis for 3D cluster
+zq::opengl::GLUTWindow2D<1>			win1(820, 0, 400, 400); // vis for 2D cluster
 
 // homology
 int example = 0;
-float epsilon;
-float max_epsilon = 0.6;
-int reso_epsilon = 100;
-std::vector<int> witness_index;
+//https://blog.csdn.net/playgoon2/article/details/77579757
+zq::real data2D_raw[] = { -1.26, 0.46, -1.15, 0.49, -1.19, 0.36, -1.33, 0.28, -1.06, 0.22, -1.27, 0.03, -1.28, 0.15, -1.06, 0.08, -1.00, 0.38, -0.44, 0.29, -0.37, 0.45, -0.22, 0.36, -0.34, 0.18, -0.42, 0.06, -0.11, 0.12, -0.17, 0.32,
+ -0.27, 0.08, -0.49, -0.34, -0.39, -0.28, -0.40, -0.45, -0.15, -0.33, -0.15, -0.21, -0.33, -0.30, -0.23, -0.45, -0.27, -0.59, -0.61, -0.65, -0.61, -0.53, -0.52, -0.53, -0.42, -0.56, -1.39, -0.26 };
+zq::Array<zq::Vec<zq::real, 2>> data2D;
+zq::Array<zq::Vec<zq::real, 2>, HOST> center2D;
 
-std::vector<std::pair<float, float>> epsilon_interval;
-std::vector<int> feture_type;
-std::vector<float> epsilon_list;
-std::vector<zq::Simplical_Complex<zq::Vec3f>> complex_list;
-
-// hci panal
-float cur_epsilon = 1.0;
-
+zq::Array<int, HOST> clusters;
 //	other variables
 float				fps;
 float* tex_ptr;
@@ -75,19 +49,30 @@ void calculateFps() {
 
 void win0_showFps() {
 	glColor3f(1, 0, 1);
-	zq::opengl::printInfo(0, 0, "fps: %f\nuse key a and d to adjust the epsilon, cur epsilon:%f/max epsilon:%f", fps, cur_epsilon, max_epsilon);
+	zq::opengl::printInfo(0, 0, "fps: %f", fps);
 }
 
 void win0_draw() {
-	int complex_index = cur_epsilon / (max_epsilon / reso_epsilon);
-	if (complex_index < 0) complex_index = 0;
-	else if (complex_index >= complex_list.size()) complex_index = complex_list.size() - 1;
-	//printf("complex_index:%d %d\n", complex_index, complex_list[complex_index].SimplexNumber());
-	zq::homology::DrawSimplicalComplex(complex_list[complex_index]);
-	if (use_witness[example]) {
-		glColor4f(0.5, 0, 0, 1);
-		for (int i = 0; i < points.Dim(); i++)
-			zq::opengl::drawPointAsSphere(points.value[i], 0.01);
+	if (example == 0 || example == 1) {
+		zq::real win_x = 2;
+		zq::real win_y = 2;
+		zq::real win_ox = -1;
+		zq::real win_oy = -1;
+		/// draw example of 2D
+		glColor3f(1, 0, 0);
+		float color[3];
+		zq::opengl::getSequentialDisplayColor(color, 0);
+		glColor3f(color[0], color[1], color[2]);
+		for (int i = 0; i < center2D.size(); i++) {
+			zq::opengl::drawCircleFilled(zq::opengl::Window2DCoordinate<zq::real>(center2D[i], win_x, win_y, win_ox, win_oy), 0.05);
+		}
+		for (int i = 0; i < data2D.size(); i++) {
+			float color[3];
+			zq::opengl::getSequentialDisplayColor(color, clusters[i] + 1);
+			glColor3f(color[0], color[1], color[2]);
+			zq::opengl::drawCircleFilled(zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy), 0.02);
+			//printf("%f %f\n", zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy)[0], zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy)[1]);
+		}
 	}
 }
 
@@ -98,159 +83,83 @@ void win3d_keyboard(unsigned char key, int x, int y) {
 	switch (key) {
 	case 27:
 		exit(0);
-	case 'a':
-		cur_epsilon -= max_epsilon / reso_epsilon / 2;
-		break;
-	case 'd':
-		cur_epsilon += max_epsilon / reso_epsilon / 2;
-		break;
 	}
 }
+
 void win1_showInfo() {
 	glColor3f(0, 0, 1);
-	zq::opengl::printInfo(0, 30, "persistent barcode");
+	zq::opengl::printInfo(0, 30, "2D cluster draw");
 }
-
-void win2_showInfo() {
-	glColor3f(0, 0, 1);
-	zq::opengl::printInfo(0, 30, "persistent diagram");
-}
-
 void win1_draw() {
 	//glEnable(GL_TEXTURE_2D);
-	float display_max_epsilon = max_epsilon * 1.1;
-	float win_x = 2;
-	float win_y = 2;
-	float win_ox = -1;
-	float win_oy = -1;
-	zq::homology::DrawPersistentBarCode(
-		epsilon_interval,
-		feture_type,
-		max_epsilon,
-		display_max_epsilon,
-		win_x,
-		win_y,
-		win_ox,
-		win_oy
-	);
-	// Then draw the line
-	glColor3f(1, 0, 0);
-	zq::opengl::drawLineSegment(
-		zq::Vec2f(cur_epsilon / display_max_epsilon * win_x + win_ox, win_oy),
-		zq::Vec2f(cur_epsilon / display_max_epsilon * win_x + win_ox, win_oy + win_y)
-	);
+	if (example == 0 || example == 1) {
+		zq::real win_x = 2;
+		zq::real win_y = 2;
+		zq::real win_ox = -1;
+		zq::real win_oy = -1;
+		/// draw example of 2D
+		glColor3f(1, 0, 0);
+		float color[3];
+		zq::opengl::getSequentialDisplayColor(color, 0);
+		glColor3f(color[0], color[1], color[2]);
+		for (int i = 0; i < center2D.size(); i++) {
+			zq::opengl::drawCircleFilled(zq::opengl::Window2DCoordinate<zq::real>(center2D[i], win_x, win_y, win_ox, win_oy),0.05);
+		}
+		for (int i = 0; i < data2D.size(); i++) {
+			float color[3];
+			zq::opengl::getSequentialDisplayColor(color, clusters[i]+1);
+			glColor3f(color[0], color[1], color[2]);
+			zq::opengl::drawCircleFilled(zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy),0.02);
+			//printf("%f %f\n", zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy)[0], zq::opengl::Window2DCoordinate<zq::real>(data2D[i], win_x, win_y, win_ox, win_oy)[1]);
+		}
+	}
 }
-void win2_draw() {
-	//glEnable(GL_TEXTURE_2D);
-	float display_max_epsilon = max_epsilon * 1.1;
-	float win_x = 2;
-	float win_y = 2;
-	float win_ox = -1;
-	float win_oy = -1;
-	zq::homology::DrawPersistentDiagram(
-		epsilon_interval,
-		feture_type,
-		max_epsilon,
-		display_max_epsilon,
-		max_epsilon * 0.1,
-		win_x,
-		win_y,
-		win_ox,
-		win_oy
-	);
-}
+
 int main() {
-	// 1. read points
-	cur_epsilon = 0;
 
-	printf("the example:");
-	scanf("%d", &example);
-	zq::utils::readDenseVectorPointsFromFile(file_list[example].c_str(), points);
-	// 2. set the epsilon list
-	for (int i = 0; i < reso_epsilon; i++) {
-		epsilon_list.push_back(max_epsilon / reso_epsilon * i);
+	// assemble data
+	for (int i = 0; i < sizeof(data2D_raw) / sizeof(zq::real); i += 2) {
+		data2D.push_back(zq::Vec<zq::real, 2>(data2D_raw[i]+1.5, data2D_raw[i + 1] + 1.5)/2);
 	}
-	if (use_witness[example]) {
-		// 3. set the complex list
-		// 3.1 find witness
-		zq::FindWitness(
-			points.Dim(),
-			witness_size[example],
-			witness_index
+	//scanf("%d", &example);
+	example = 0;
+	if (example == 0) {
+		zq::math::ClusterPara para;
+		para.cluster_num = 4;
+		zq::math::kMeansCluster<zq::real, 2, HOST>(
+			data2D,
+			para,
+			clusters,
+			center2D
 		);
-		// 3.2 construct
-		for (int i = 0; i < epsilon_list.size(); i++) {
-			std::vector<std::vector<int>> results;
-			zq::VRWitnessComplexConstruct(
-				epsilon_list[i],
-				points.value,
-				witness_index,
-				simplex_dimension[example],
-				results
-			);
-			complex_list.push_back(zq::Simplical_Complex<zq::Vec3f>(&(points.value[0]), points.Dim(), results));
-		}
 	}
-	else {
-		// 3. set the complex list
-		for (int i = 0; i < epsilon_list.size(); i++) {
-			std::vector<std::vector<int>> results;
-			zq::VRComplexConstruct(
-				epsilon_list[i],
-				points.value,
-				simplex_dimension[example],
-				results
-			);
-			complex_list.push_back(zq::Simplical_Complex<zq::Vec3f>(&(points.value[0]), points.Dim(), results));
-		}
-
+	if(example==1){
+		zq::math::ClusterPara para;
+		para.cluster_num = 8;
+		zq::math::kMeansClusterGap<zq::real, 2, HOST>(
+			data2D,
+			para,
+			clusters,
+			center2D
+		);
 	}
-	// 4. calculate the persistent diagram
-
-	zq::CalculatePersistentDataSparse(
-		epsilon_list,
-		max_epsilon,
-		complex_list,
-		epsilon_interval,
-		feture_type
-	);
-	auto tem_epsilon_interval = epsilon_interval;
-	auto tem_feture_type = feture_type;
-	feture_type.clear();
-	epsilon_interval.clear();
-	int maxv = -1;
-	for (int i = 0; i < tem_feture_type.size(); i++) {
-		maxv = maxv > tem_feture_type[i] ? maxv : tem_feture_type[i];
-		if (tem_feture_type[i] != simplex_dimension[example]) {
-			epsilon_interval.push_back(tem_epsilon_interval[i]);
-			feture_type.push_back(tem_feture_type[i]);
-		}
-	}
-	std::cout << maxv << std::endl;
 	//	create window 0
 	win0.SetDrawAppend(win0_showFps);				//	set draw append callback
 	win0.SetDraw(win0_draw);						//	set draw callback
-	win0.SetBackgroundColor(0, 0.4, 0.5, 0);		//	set background color
+	win0.SetBackgroundColor(1,1,1,1);		//	set background color
 	win0.keyboardFunc = win3d_keyboard;
 	win0.CreateGLUTWindow();						//	create window 0
 
 	//	create window 1, then setup barcode
 	win1.SetDraw(win1_draw);							//	set draw callback
 	win1.SetDrawAppend(win1_showInfo);					//	set draw append callback
-	win1.SetBackgroundColor(0, 1, 1, 1);				//	set background color
+	win1.SetBackgroundColor(1, 1, 1, 1);				//	set background color
 	win1.CreateGLUTWindow();							//	create window 1
-
-	//	create window 1, then setup persistent diagram
-	win2.SetDraw(win2_draw);							//	set draw callback
-	win2.SetDrawAppend(win2_showInfo);					//	set draw append callback
-	win2.SetBackgroundColor(0, 1, 1, 1);				//	set background color
-	win2.CreateGLUTWindow();							//	create window 1
 
 	//!	[Window Manager Setup]
 	manager.AddIdleFunc(calculateFps);	//	add each idle function in sequence
 	manager.AddIdleFunc(win0.idleFunc);
 	manager.AddIdleFunc(win1.idleFunc);
-	manager.AddIdleFunc(win2.idleFunc);
 
 	manager.EnterMainLoop();			//	then enter main loop
 	//!	[Window Manager Setup]

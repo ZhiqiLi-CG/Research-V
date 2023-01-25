@@ -83,7 +83,7 @@ void win0_draw() {
 	if (complex_index < 0) complex_index = 0;
 	else if (complex_index >= complex_list.size()) complex_index = complex_list.size() - 1;
 	//printf("complex_index:%d %d\n", complex_index, complex_list[complex_index].SimplexNumber());
-	zq::homology::DrawSimplicalComplex(complex_list[complex_index]);
+	zq::homology::DrawSimplicalComplex<float,3>(complex_list[complex_index]);
 	if (use_witness[example]) {
 		glColor4f(0.5, 0, 0, 1);
 		for (int i = 0; i < points.Dim(); i++)

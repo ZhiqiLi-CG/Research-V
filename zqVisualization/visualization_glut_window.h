@@ -1589,7 +1589,34 @@ typedef GLUTWindow2D<0> DemoWindow2D;
 */
 typedef GLUTTextureWindow2D<0> DemoTextureWindow2D;
 
-}}	//	end namespace yz::opengl
+template<class T>
+Vec<T, 2> Window2DCoordinate(
+	T x,
+	T y,
+	T win_x = 2,
+	T win_y = 2,
+	T win_ox = -1,
+	T win_oy = -1
+) {
+	return Vec<T, 2>(
+		win_ox+x*win_x,
+		win_oy + y*win_y
+	);
+}
+template<class T>
+Vec<T, 2> Window2DCoordinate(	
+	Vec<T,2> p,
+	T win_x = 2,
+	T win_y = 2,
+	T win_ox = -1,
+	T win_oy = -1
+) {
+	return Vec<T, 2>(
+		win_ox + p[0] * win_x,
+		win_oy + p[1] * win_y
+		);
+}
+}}	
 
 
-#endif	//	__YZ_GLUT_WINDOW_H__
+#endif	
